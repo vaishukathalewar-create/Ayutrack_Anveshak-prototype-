@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AyuTrack - Prototype</title>
+<style>
+:root{--bg:#F3F6FB;--card:#fff;--tx:#14213D;--mut:#5B6577;--bd:#D5DDEB;--pri:#0070C0;--acc:#F59E0B;--ok:#12704F;--bad:#C00000;--soft:#E8F1FB;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1524;--card:#17223A;--tx:#E8EEF9;--mut:#9AA8C2;--bd:#2B3A5A;--pri:#4DA3F0;--soft:#1B2C4D;--ok:#3CC08A;--bad:#FF6B6B}}
+:root[data-theme="dark"]{--bg:#0E1524;--card:#17223A;--tx:#E8EEF9;--mut:#9AA8C2;--bd:#2B3A5A;--pri:#4DA3F0;--soft:#1B2C4D;--ok:#3CC08A;--bad:#FF6B6B}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font-family:Arial,Helvetica,sans-serif;font-size:14px}
+.w{max-width:960px;margin:0 auto;padding:14px}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+h1{font-size:19px;margin:0}h1 small{display:block;font-size:12px;color:var(--mut);font-weight:400;margin-top:2px}
+.live{font-size:12px;color:var(--ok);font-weight:700}.live:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ok);margin-right:6px;animation:p 1.4s infinite}
+@keyframes p{50%{opacity:.25}}
+.demo{background:var(--acc);color:#111;font-size:11px;font-weight:700;border-radius:10px;padding:2px 8px;margin-left:6px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.tabs button{flex:1;min-width:130px;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;font-weight:700;cursor:pointer}
+.tabs button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.sae{display:none;background:var(--bad);color:#fff;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-weight:700}
+.sae span{font-weight:400;display:block;font-size:12px;margin-top:2px}
+.g{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.k{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 12px}
+.k b{display:block;font-size:24px;color:var(--pri)}.k i{font-style:normal;font-size:12px;color:var(--mut)}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-top:12px}
+.c h3{margin:0 0 8px;font-size:14px}
+.row{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+label{display:block;font-size:12px;color:var(--mut);margin:8px 0 3px}
+input,select{width:100%;padding:8px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx);font-size:14px}
+.chk{display:flex;gap:8px;align-items:center;margin-top:10px}.chk input{width:auto}
+.btn{margin-top:12px;background:var(--pri);color:#fff;border:0;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer;width:100%}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--bd)}th{color:var(--mut);font-weight:600}
+.tw{overflow-x:auto}
+.ch{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;font-weight:700}
+.ok{background:#12704F22;color:var(--ok)}.wn{background:#F59E0B33;color:#B36B00}.bd{background:#C0000022;color:var(--bad)}
+.bar{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:12px}.bar span:first-child{width:56px;color:var(--mut)}
+.bar div{flex:1;background:var(--soft);border-radius:5px;height:16px;overflow:hidden}.bar div i{display:block;height:100%;background:var(--pri);transition:width .6s}
+.bar span:last-child{width:70px;text-align:right;font-weight:700}
+pre{background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:8px;font-size:11px;overflow-x:auto;margin:8px 0 0}
+#toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:9px 14px;border-radius:8px;font-size:13px;display:none;z-index:9;max-width:90%}
+.note{font-size:12px;color:var(--mut);margin-top:6px}
+.hero{background:linear-gradient(120deg,#0B3D2E,#1F7A4D 62%,#F59E0B);border-radius:12px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:8px;overflow:hidden;padding:12px 16px}
+.hero h1{font-size:22px}.hero h1 small{color:#E6F4EA}.hero svg{flex:0 0 auto;max-width:42%;height:auto}
+.hero .ctl{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}.hero .ctl button,.hero .ctl select{border:0;border-radius:8px;padding:8px 10px;font-weight:700;font-size:13px}
+.hero .ctl button{background:#fff;color:#0B3D2E;cursor:pointer}.hero .ctl select{background:#ffffffcc;color:#111}
+.dosha{display:flex;gap:6px;margin:8px 0 0;flex-wrap:wrap}.dosha span{background:#ffffff26;border-radius:10px;padding:2px 9px;font-size:11px}
+#tcap{position:fixed;left:0;right:0;bottom:0;background:#0B3D2E;color:#fff;padding:14px 18px;text-align:center;font-weight:700;font-size:16px;z-index:98;display:none}
+</style></head><body><div class="w">
+<header class="hero"><div><h1>AyuTrack <span class="demo">PROTOTYPE - SAMPLE DATA</span><small>AIIA Clinical Trials Dashboard | SIH26046</small></h1><div class="dosha"><span>Vata</span><span>Pitta</span><span>Kapha</span><span class="live" style="background:none;color:#fff;padding:2px 0">LIVE</span></div><div class="ctl"><button id="go">&#9654; Guided demo with voice</button><select id="lang"><option value="hi">Hindi voice</option><option value="en">English voice</option></select></div></div><svg viewBox="0 0 260 120" width="250" aria-hidden="true"><circle cx="205" cy="35" r="52" fill="#fff" opacity=".12"/><path d="M20 118 Q32 62 52 18" stroke="#A6E3B0" stroke-width="3" fill="none"/><g fill="#7BD88F"><ellipse cx="34" cy="84" rx="15" ry="6" transform="rotate(-35 34 84)"/><ellipse cx="46" cy="58" rx="15" ry="6" transform="rotate(30 46 58)"/><ellipse cx="42" cy="36" rx="13" ry="5" transform="rotate(-35 42 36)"/><ellipse cx="54" cy="22" rx="11" ry="5" transform="rotate(35 54 22)"/></g><rect x="108" y="22" width="12" height="62" rx="6" transform="rotate(24 114 54)" fill="#8B5A2B"/><path d="M72 80 h78 q0 30 -39 30 q-39 0 -39 -30z" fill="#E0A458"/><ellipse cx="111" cy="80" rx="39" ry="6" fill="#4FAE5F"/><g fill="#2E8B57"><circle cx="98" cy="79" r="3"/><circle cx="116" cy="78" r="3"/><circle cx="128" cy="80" r="2.5"/></g><path d="M165 112 q35 -8 80 0" stroke="#BFE8FF" stroke-width="3" fill="none"/><g transform="translate(205 90)"><g fill="#FFD1E3" stroke="#F3A5C4"><ellipse cx="0" cy="-18" rx="8" ry="20" transform="rotate(-55)"/><ellipse cx="0" cy="-18" rx="8" ry="20" transform="rotate(55)"/><ellipse cx="0" cy="-18" rx="8" ry="20" transform="rotate(-28)"/><ellipse cx="0" cy="-18" rx="8" ry="20" transform="rotate(28)"/><ellipse cx="0" cy="-20" rx="8" ry="22"/></g><ellipse cx="0" cy="0" rx="10" ry="4" fill="#F59E0B"/></g></svg></header>
+<div class="tabs" id="tabs"></div>
+<div class="sae" id="sae"></div>
+<div id="view"></div>
+<div id="toast"></div><div id="tcap"></div>
+</div>
+<script>
+const S={role:'head',sites:[{n:'Site A',t:50,e:41},{n:'Site B',t:40,e:26},{n:'Site C',t:40,e:36},{n:'Site D',t:30,e:17}],aes:[],forms:14,sae:null,
+pts:[['P-101','Vata-Pitta','3 Oct'],['P-102','Kapha','4 Oct'],['P-103','Pitta','6 Oct'],['P-104','Vata','7 Oct']]};
+const R={head:'Research Head',doc:'Doctor / PI',deo:'Data Entry',off:'Ayush Officer'};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tot=()=>{let t=0,e=0;S.sites.forEach(s=>{t+=s.t;e+=s.e});return{t,e,p:Math.round(e/t*100)}};
+const saeCount=()=>S.aes.filter(a=>a.sae).length;
+function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',3200)}
+function kpis(list){return '<div class="g">'+list.map(k=>`<div class="k"><b>${k[0]}</b><i>${k[1]}</i></div>`).join('')+'</div>'}
+function bars(){return S.sites.map(s=>{const p=Math.round(s.e/s.t*100);return `<div class="bar"><span>${s.n}</span><div><i style="width:${p}%"></i></div><span>${s.e}/${s.t}</span></div>`}).join('')}
+function chip(t,c){return `<span class="ch ${c}">${t}</span>`}
+function aeTable(){return S.aes.length?`<div class="tw"><table><tr><th>Participant</th><th>Event</th><th>Severity</th><th>Causality</th><th>Status</th></tr>${S.aes.map(a=>`<tr><td>${esc(a.p)}</td><td>${esc(a.ev)}</td><td>${a.sv}</td><td>${a.ca}</td><td>${a.sae?chip('SAE - 24h alert','bd'):chip('Routine log','ok')}</td></tr>`).join('')}</table></div>`:'<div class="note">No adverse events recorded yet. Try the Doctor tab.</div>'}
+const V={
+head(){const T=tot();return kpis([[T.p+'%','Enrollment vs target'],[S.sites.length,'Active sites'],[S.aes.length,'Adverse events'],[saeCount(),'Serious (SAE)'],[S.forms,'eCRF forms today']])+
+`<div class="row"><div class="c"><h3>Site-wise enrollment (live)</h3>${bars()}</div><div class="c"><h3>Ethics and regulatory</h3><table><tr><td>Ethics Committee approval</td><td>${chip('Approved','ok')}</td></tr><tr><td>CTRI registration</td><td>${chip('Registered','ok')}</td></tr><tr><td>NDCT Rules 2019 documents</td><td>${chip('1 pending','wn')}</td></tr></table></div></div><div class="c"><h3>Adverse event log</h3>${aeTable()}</div>`},
+doc(){return kpis([[S.pts.length,'My participants'],['2','Visits this week'],[S.aes.length,'AEs reported']])+
+`<div class="row"><div class="c"><h3>My participants</h3><div class="tw"><table><tr><th>ID</th><th>Prakriti</th><th>Next visit</th></tr>${S.pts.map(p=>`<tr><td>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td></tr>`).join('')}</table></div></div>
+<div class="c"><h3>Report adverse event</h3><form id="aef"><label>Participant</label><select name="p">${S.pts.map(p=>`<option>${p[0]}</option>`).join('')}</select><label>Event</label><input name="ev" required placeholder="e.g. Nausea, skin rash"><label>Severity</label><select name="sv"><option>Mild</option><option>Moderate</option><option>Severe</option></select><label>Causality (WHO-UMC)</label><select name="ca"><option>Unlikely</option><option>Possible</option><option>Probable</option></select><div class="chk"><input type="checkbox" name="sr" id="sr"><label for="sr" style="margin:0">Serious event (hospitalisation, life threatening)</label></div><button class="btn">Submit adverse event</button></form></div></div>`},
+deo(){return kpis([[S.forms,'Forms saved today'],['3','Pending entries'],['0','Open data queries']])+
+`<div class="row"><div class="c"><h3>eCRF - Visit entry</h3><form id="cf"><label>Participant</label><select name="p">${S.pts.map(p=>`<option>${p[0]}</option>`).join('')}</select><label>Prakriti</label><select name="pr"><option>Vata</option><option>Pitta</option><option>Kapha</option><option>Vata-Pitta</option></select><label>Formulation</label><select name="fm"><option>Vati (tablet)</option><option>Churna (powder)</option><option>Kwatha (decoction)</option><option>Ghrita</option></select><label>Dose (mg, 1 to 5000)</label><input name="ds" type="number" required placeholder="500"><label>Systolic BP (mmHg)</label><input name="bp" type="number" required placeholder="120"><button class="btn">Save eCRF</button></form></div>
+<div class="c"><h3>Standard output (CDISC / FHIR)</h3><div class="note">After saving, data is stored in standard format so other hospitals can read it.</div><pre id="fh">{ "resourceType": "Observation",\n  "status": "final",\n  "subject": "ResearchSubject/P-101",\n  "code": "Systolic BP" }</pre></div></div>`},
+off(){const T=tot();return kpis([[T.p+'%','National enrollment'],[S.sites.length,'Active sites'],[saeCount(),'SAE reported'],['92%','Compliance score']])+
+`<div class="row"><div class="c"><h3>Trials by site</h3>${bars()}</div><div class="c"><h3>Compliance</h3><table><tr><td>Ethics approvals</td><td>${chip('4 / 4','ok')}</td></tr><tr><td>CTRI registration</td><td>${chip('4 / 4','ok')}</td></tr><tr><td>NDCT documents</td><td>${chip('3 / 4','wn')}</td></tr><tr><td>SAE reported in 24h</td><td>${saeCount()?chip(saeCount()+' on time','ok'):chip('None','ok')}</td></tr></table></div></div>`}
+};
+function render(){$('tabs').innerHTML=Object.keys(R).map(k=>`<button class="${k===S.role?'on':''}" data-r="${k}">${R[k]}</button>`).join('');$('view').innerHTML=V[S.role]()}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-r]');if(b){S.role=b.dataset.r;render()}});
+document.addEventListener('submit',e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
+ if(e.target.id==='aef'){const sae=!!f.sr||f.sv==='Severe';const rep=S.aes.filter(a=>a.ev.toLowerCase()===f.ev.trim().toLowerCase()).length;S.aes.unshift({p:f.p,ev:f.ev.trim(),sv:f.sv,ca:f.ca,sae});
+  if(sae){S.sae=Date.now();showSae(f.p)}toast(rep?'AI flag: this event was reported before - pattern alert sent to safety team':sae?'SAE recorded. Alert sent to Ethics Committee, regulator and sponsor':'Adverse event recorded in routine log');render()}
+ if(e.target.id==='cf'){const d=+f.ds,b=+f.bp;if(d<1||d>5000||b<60||b>250){toast('Validation error: check dose (1-5000) and BP (60-250)');return}S.forms++;
+  $('fh').textContent=JSON.stringify({resourceType:'Observation',status:'final',subject:'ResearchSubject/'+f.p,code:'Systolic BP',valueQuantity:b,extension:{prakriti:f.pr,formulation:f.fm,doseMg:d},sdtm:'VS, EX'},null,1);toast('eCRF saved in CDISC / FHIR format');e.target.reset()}});
+function showSae(p){const s=$('sae');s.style.display='block';s.innerHTML='SAE ALERT - Participant '+esc(p)+' <span id="cd"></span><span>Ethics Committee, regulator and sponsor notified. Detailed report due in 14 days.</span>'}
+setInterval(()=>{if(S.sae){const l=86400-Math.floor((Date.now()-S.sae)/1000),h=String(Math.floor(l/3600)).padStart(2,'0'),m=String(Math.floor(l%3600/60)).padStart(2,'0'),c=String(l%60).padStart(2,'0'),x=$('cd');if(x)x.textContent='- 24-hr report due in '+h+':'+m+':'+c}},1000);
+setInterval(()=>{const o=S.sites.filter(s=>s.e<s.t);if(!o.length)return;o[Math.floor(Math.random()*o.length)].e++;if(S.role==='head'||S.role==='off')render()},4000);
+const sl=ms=>new Promise(r=>setTimeout(r,ms));
+function say(t,l){return new Promise(res=>{if(!window.speechSynthesis){setTimeout(res,Math.max(3000,t.length*80));return}const u=new SpeechSynthesisUtterance(t);u.lang=l==='hi'?'hi-IN':'en-IN';u.rate=.95;u.onend=res;u.onerror=res;speechSynthesis.cancel();speechSynthesis.speak(u);setTimeout(res,22000)})}
+const setv=(fm,n,v)=>{const e=document.querySelector('#'+fm+' [name='+n+']');if(e)e.value=v};
+const STEPS=[
+{r:'head',hi:'AyuTrack आयुर्वेद रिसर्च के लिए एक लाइव क्लिनिकल ट्रायल डैशबोर्ड है। रिसर्च हेड यहाँ सभी साइट्स का एनरोलमेंट, और एथिक्स तथा CTRI की स्थिति एक ही जगह देखता है।',en:'AyuTrack is a live clinical trial dashboard for Ayurveda research. The Research Head sees enrollment, ethics and CTRI status for all sites in one place.'},
+{r:'doc',hi:'अब डॉक्टर किसी मरीज़ पर दिखे साइड इफ़ेक्ट को यहाँ दर्ज करता है।',en:'Now the doctor records a side effect seen in a participant.',a:async()=>{await sl(600);setv('aef','p','P-102');setv('aef','ev','Severe skin rash');setv('aef','sv','Severe');setv('aef','ca','Probable');$('sr').checked=true}},
+{hi:'अगर घटना गंभीर है, तो तुरंत SAE अलर्ट बनता है और चौबीस घंटे का टाइमर शुरू हो जाता है। यह एथिक्स कमेटी और रेगुलेटर को भेजा जाता है।',en:'If the event is serious, an SAE alert is created at once and a 24 hour timer starts. It goes to the Ethics Committee and the regulator.',a:async()=>{$('aef').requestSubmit()}},
+{r:'deo',hi:'डेटा एंट्री ऑपरेटर विज़िट का डेटा भरता है, जिसमें प्रकृति और औषधि का रूप जैसे आयुर्वेदिक फ़ील्ड भी हैं।',en:'The data entry operator fills visit data, including Ayurveda fields like Prakriti and formulation.',a:async()=>{await sl(600);setv('cf','p','P-102');setv('cf','pr','Kapha');setv('cf','fm','Churna (powder)');setv('cf','ds','500');setv('cf','bp','118')}},
+{hi:'डेटा CDISC और FHIR मानक फ़ॉर्मेट में सेव होता है, ताकि दूसरे अस्पताल और रिसर्च सिस्टम इसे आसानी से पढ़ सकें।',en:'Data is saved in CDISC and FHIR standard format, so other hospitals and research systems can read it easily.',a:async()=>{$('cf').requestSubmit()}},
+{r:'head',hi:'रिसर्च हेड का डैशबोर्ड तुरंत अपडेट हो जाता है, जिसमें साइड इफ़ेक्ट लॉग और SAE की गिनती दिखती है।',en:'The Research Head dashboard updates instantly with the adverse event log and SAE count.'},
+{r:'off',hi:'और आयुष मंत्रालय का अधिकारी पूरे देश के ट्रायल्स की कम्प्लायंस एक नज़र में देखता है। यही है AyuTrack।',en:'And the Ayush Ministry officer sees compliance of all trials at a glance. This is AyuTrack.'}];
+async function tour(){const l=$('lang').value,c=$('tcap');c.style.display='block';for(const s of STEPS){if(s.r&&S.role!==s.r){S.role=s.r;render()}if(s.a)await s.a();c.textContent=s[l];await say(s[l],l);await sl(700)}c.style.display='none'}
+$('go').onclick=()=>{tour()};
+render();
+</script></body></html>
